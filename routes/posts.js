@@ -57,7 +57,7 @@ const { authenticateToken } = require('../middlewares/authenticateToken');
     *         description: Internal server error
     */
 router.get('/', getPostsValidator, handleValidationErrors, async (req, res) => {
-    const { minViews, minRating, sort, page = 1, postsPerPage = 5 } = req.query;
+    const { minViews, minRating, sort, page = 1, postsPerPage = 5, keywords } = req.query;
 
     const startingPoint = (page - 1) * postsPerPage;
     const pageCount = postsPerPage;
@@ -69,6 +69,11 @@ router.get('/', getPostsValidator, handleValidationErrors, async (req, res) => {
     if (minRating) {
       queryOptions.averageRating = { [Op.gte]: minRating };
     }
+    if (keywords) {
+      queryOptions.title = { [Op.like]: `%${keywords}%` };
+    }
+
+
     let sortOption = [['createdAt', 'DESC']]; // Default sorting
     if (sort === 'rating') {
       sortOption = [['averageRating', 'DESC']];
