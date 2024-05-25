@@ -1,0 +1,42 @@
+View Recipes Flow:
+
+	User gets a list of all recipes.
+    User optionally searches a recipe by name.
+	User optionally sorts and/or filters the results by rating.
+    User selects a specific recipe.
+    User can see the recipe title, ingredients, instructions, and other details.
+
+Register/Login:
+
+    User fills in the registration form with username and password and optionally, real name and description.
+    User submits the form.
+    Backend validates the input data.
+    If validation passes, the backend creates a new user account.
+    User fills the login form with the newly created account.
+	Backend validates the credentials.
+    If credentials are correct, the backend generates a JWT token and sends it to the client.
+
+
+Add Recipe:
+
+	User logs in and gets a JWT token.
+    User fills in the recipe details such as title, ingredients, instructions, etc.
+    User may optionally upload an image for the recipe.
+    User submits the form.
+    Backend validates the input data.
+    If validation passes, the backend adds the new recipe to the database.
+
+Leave Review:
+
+    Authenticated user selects a specific recipe.
+    User fills in the review form with a rating and an optional comment.
+    User submits the review.
+    Backend validates the input data.
+    If validation passes, the backend adds the review to the database.
+    User can see their review added to the reviews section.
+	
+Delete Account:
+
+	User logs in.
+	User selects "delete account".
+	Backend deletes, user account, reviews and recipes.
