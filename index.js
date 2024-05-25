@@ -128,6 +128,39 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.post('/post', async (req, res) => {
+    const { title, content, thumbnail, userId } = req.body; 
+    try {
+        const post = await Post.create({
+        title,
+        content,
+        thumbnail,
+        userId 
+        });
+        res.status(201).json(post); 
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/posts/:postId/review', async (req, res) => {
+    const { rating, comment, userId} = req.body; 
+    const { postId } = req.params;
+    try {
+        const review = await Review.create({
+        rating,
+        comment,
+        userId, 
+        postId 
+        });
+        res.status(201).json(review);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -154,3 +187,6 @@ sequelize.sync()
   .catch(error => {
     console.error('Unable to sync Sequelize with the database:', error);
   });
+
+
+module.exports = app;
