@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const { Op } = require('sequelize');
+
+const getPostsValidator = require('../middlewares/validators/getPosts');
 const createPostValidator = require('../middlewares/validators/createPost');
 const updatePostValidator = require('../middlewares/validators/updatePost');
 const handleValidationErrors = require('../middlewares/handleValidationErrors');
@@ -7,9 +10,25 @@ const { Post } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 
 
-router.get('/', async (req, res) => {
+router.get('/', getPostsValidator, handleValidationErrors, async (req, res) => {
+    const { minViews, minRating, sort } = req.query;
+
+    const queryOptions = {};
+    if (minViews) {
+      queryOptions.views = { [Op.gte]: minViews };
+    }
+    if (minRating) {
+      queryOptions.averageRating = { [Op.gte]: minRating };
+    }
+    let sortOption = [['createdAt', 'DESC']]; // Default sorting
+    if (sort === 'rating') {
+      sortOption = [['averageRating', 'DESC']];
+    } else if (sort === 'views') {
+      sortOption = [['views', 'DESC']];
+    }
+
     try {
-        const posts = await Post.findAll();
+        const posts = await Post.findAll({where: queryOptions, order: sortOption});
         res.json(posts);
     } catch (error) {
         console.error(error);
