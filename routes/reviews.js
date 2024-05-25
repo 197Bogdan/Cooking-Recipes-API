@@ -6,6 +6,34 @@ const { Review, Post } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 const handleValidationErrors = require('../middlewares/handleValidationErrors.js');
 
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Reviews
+ *     description: Operations related to reviews
+ */
+
+/**
+ * @swagger
+ * /posts/{postId}/reviews:
+ *   get:
+ *     summary: Get all reviews for a post
+ *     tags: [Reviews]
+ *     description: Get all reviews for a post
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the post
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/', async (req, res) => {
     try {
       const reviews = await Review.findAll();
@@ -17,6 +45,29 @@ router.get('/', async (req, res) => {
   });
   
 
+/** 
+ * @swagger 
+ * 
+ * /posts/{postId}/reviews/{id}:
+ *   get:
+ *     summary: Get a review by ID
+ *     tags: [Reviews]
+ *     description: Get a review by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the review
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Review not found
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -31,7 +82,32 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-
+/**
+ * @swagger
+ * /posts/{postId}/reviews:
+ *   post:
+ *     summary: Create a new review
+ *     tags: [Reviews]
+ *     description: Create a new review
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *               comment:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/', authenticateToken, createReviewValidator, handleValidationErrors, async (req, res) => {
     const { rating, comment} = req.body; 
     const { postId } = req.params;
@@ -57,7 +133,41 @@ router.post('/', authenticateToken, createReviewValidator, handleValidationError
 });
 
 
-
+/**
+ * @swagger
+ * /posts/{postId}/reviews/{reviewId}:
+ *   put:
+ *     summary: Update a review
+ *     tags: [Reviews]
+ *     description: Update a review
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: reviewId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the review
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *               comment:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Review not found or unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 router.put('/:reviewId', authenticateToken, updateReviewValidator, handleValidationErrors, async (req, res) => {
     const { rating, comment } = req.body;
     const { reviewId } = req.params;
@@ -77,6 +187,31 @@ router.put('/:reviewId', authenticateToken, updateReviewValidator, handleValidat
     }
 });
 
+
+/**
+ * @swagger
+ * /posts/{postId}/reviews/{reviewId}:
+ *   delete:
+ *     summary: Delete a review
+ *     tags: [Reviews]
+ *     description: Delete a review
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: reviewId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the review
+ *     responses:
+ *       204:
+ *         description: No content
+ *       404:
+ *         description: Review not found or unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 router.delete('/:reviewId', authenticateToken, async (req, res) => {
     const { reviewId } = req.params;
     const userId = req.user.userId; 

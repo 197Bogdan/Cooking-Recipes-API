@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const secretKey = 'hahabcd';
+
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -7,7 +7,7 @@ function authenticateToken(req, res, next) {
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-    jwt.verify(token, secretKey, (error, user) => {
+    jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
         if (error) {
         return res.status(403).json({ error: 'Forbidden' });
         }
@@ -17,4 +17,4 @@ function authenticateToken(req, res, next) {
 }
 
 
-module.exports = { authenticateToken, secretKey };
+module.exports = { authenticateToken };

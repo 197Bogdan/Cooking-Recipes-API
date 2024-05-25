@@ -9,7 +9,53 @@ const handleValidationErrors = require('../middlewares/handleValidationErrors.js
 const { Post, UploadedImage } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 
+/**
+ * @swagger
+ * tags:
+ *   - name: Posts
+ *     description: Operations related to user posts
+ */
 
+
+/**
+    * @swagger
+    * /posts:
+    *   get:
+    *     summary: Get all posts
+    *     tags: [Posts]
+    *     description: Get all posts
+    *     parameters:
+    *       - in: query
+    *         name: minViews
+    *         schema:
+    *           type: integer
+    *         description: Minimum number of views
+    *       - in: query
+    *         name: minRating
+    *         schema:
+    *           type: integer
+    *         description: Minimum rating
+    *       - in: query
+    *         name: sort
+    *         schema:
+    *           type: string
+    *         description: Sort by rating or views
+    *       - in: query
+    *         name: page
+    *         schema:
+    *           type: integer
+    *         description: Page number
+    *       - in: query
+    *         name: postsPerPage
+    *         schema:
+    *           type: integer
+    *         description: Number of posts per page
+    *     responses:
+    *       200:
+    *         description: OK
+    *       500:
+    *         description: Internal server error
+    */
 router.get('/', getPostsValidator, handleValidationErrors, async (req, res) => {
     const { minViews, minRating, sort, page = 1, postsPerPage = 5 } = req.query;
 
@@ -39,7 +85,28 @@ router.get('/', getPostsValidator, handleValidationErrors, async (req, res) => {
     }
 });
 
-
+/** 
+ * @swagger
+ * /posts/{id}:
+ *  get:
+ *   summary: Get a post by ID
+ *   tags: [Posts]
+ *   description: Get a post by ID
+ *   parameters:
+ *     - in: path
+ *       name: id
+ *       schema:
+ *         type: integer
+ *       required: true
+ *       description: ID of the post
+ *   responses:
+ *     200:
+ *       description: OK
+ *     404:
+ *       description: Post not found
+ *     500:
+ *       description: Internal server error
+ */
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -55,6 +122,34 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /posts:
+ *   post:
+ *     summary: Create a new post
+ *     tags: [Posts]
+ *     description: Create a new post
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               thumbnail:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/', authenticateToken, createPostValidator, handleValidationErrors, async (req, res) => {
     const { title, content, thumbnail} = req.body; 
 
@@ -84,6 +179,43 @@ router.post('/', authenticateToken, createPostValidator, handleValidationErrors,
     }
 });
 
+/**
+ * @swagger
+ * /posts/{postId}:
+ *   put:
+ *     summary: Update a post
+ *     tags: [Posts]
+ *     description: Update a post
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the post
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               thumbnail:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Post not found or unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 router.put('/:postId', authenticateToken, updatePostValidator, handleValidationErrors, async (req, res) => {
     const { title, content, thumbnail } = req.body;
     const { postId } = req.params;
@@ -104,6 +236,30 @@ router.put('/:postId', authenticateToken, updatePostValidator, handleValidationE
     }
   });
   
+/**
+ * @swagger
+ * /posts/{postId}:
+ *   delete:
+ *     summary: Delete a post
+ *     tags: [Posts]
+ *     description: Delete a post
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID of the post
+ *     responses:
+ *       204:
+ *         description: No content
+ *       404:
+ *         description: Post not found or unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 router.delete('/:postId', authenticateToken, async (req, res) => {
     const { postId } = req.params;
     const userId = req.user.userId;

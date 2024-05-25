@@ -7,10 +7,47 @@ const updateAccountValidator = require('../middlewares/validators/updateAccount'
 const loginAccountValidator = require('../middlewares/validators/loginAccount');
 const handleValidationErrors = require('../middlewares/handleValidationErrors.js');
 const { User, Post, Review } = require('../models');
-const { authenticateToken, secretKey } = require('../middlewares/authenticateToken');
+const { authenticateToken } = require('../middlewares/authenticateToken');
+const swaggerJSDoc = require('swagger-jsdoc');
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Accounts
+ *     description: Operations related to user accounts
+ */
 
 
-
+/** 
+ * @swagger
+ * /account/register:
+ *   post:
+ *     summary: Register an account
+ *     tags: [Accounts]
+ *     description: Register an account
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               realName:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created
+ *       400:
+ *         description: Username already exists
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/register', createAccountValidator, handleValidationErrors, async (req, res) => {
     const { username, password, realName, description } = req.body;
     console.log(username, password);
@@ -29,6 +66,32 @@ router.post('/register', createAccountValidator, handleValidationErrors, async (
   });
 
 
+/** 
+ * @swagger
+ * /account/login:
+ *   post:
+ *     summary: Login to an account
+ *     tags: [Accounts]
+ *     description: Get a token to access the account
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *       401:
+ *         description: Invalid credentials
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/login', loginAccountValidator, handleValidationErrors, async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -40,7 +103,7 @@ router.post('/login', loginAccountValidator, handleValidationErrors, async (req,
         if (!passwordMatch) {
         return res.status(401).json({ error: 'Invalid credentials' });
         }
-        const token = jwt.sign({ userId: user.id }, secretKey, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
         res.json({ token });
     } catch (error) {
         console.error(error);
@@ -49,6 +112,23 @@ router.post('/login', loginAccountValidator, handleValidationErrors, async (req,
 });
 
 
+/** 
+ * @swagger
+ * /account:
+ *   put:
+ *     summary: Update existing account
+ *     tags: [Accounts]
+ *     description: Change password, real name, or description of an account
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OK
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 router.put('/update', authenticateToken, updateAccountValidator, handleValidationErrors, async (req, res) => {
     const { password, realName, description } = req.body;
     console.log(req.body)
@@ -69,6 +149,24 @@ router.put('/update', authenticateToken, updateAccountValidator, handleValidatio
     }
 });
 
+
+/** 
+ * @swagger
+ * /account/delete:
+ *   delete:
+ *     summary: Delete account
+ *     tags: [Accounts]
+ *     description: Delete account
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       204:
+ *         description: No content
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 router.delete('/delete', authenticateToken, async (req, res) => {
     const userId = req.user.userId;
 

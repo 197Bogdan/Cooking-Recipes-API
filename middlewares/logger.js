@@ -5,7 +5,7 @@ const maxBufferSize = 512;
 let logBuffer = ''; 
 
 function logger(req, res, next) {
-  const logMessage = `[${req.ip} ${new Date().toISOString()}] ${req.method} ${req.url}\n`;
+  const logMessage = `[${new Date().toISOString()}] ${req.ip} ${req.method} ${req.url}\n`;
   logBuffer += logMessage;
 
   if (logBuffer.length >= maxBufferSize) {
