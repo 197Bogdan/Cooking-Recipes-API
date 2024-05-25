@@ -7,6 +7,7 @@ const userRoutes = require('./routes/users');
 const postRoutes = require('./routes/posts');
 const reviewRoutes = require('./routes/reviews');
 const accountRoutes = require('./routes/account');
+const imageRoutes = require('./routes/images');
 
 const app = express();
 
@@ -17,7 +18,8 @@ app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/posts/:postId/reviews', reviewRoutes);
 app.use('/account', accountRoutes);
-  
+app.use('/images', imageRoutes);
+
 
 sequelize.sync()
   .then(() => {

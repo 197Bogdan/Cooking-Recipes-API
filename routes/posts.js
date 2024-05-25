@@ -6,7 +6,7 @@ const getPostsValidator = require('../middlewares/validators/getPosts');
 const createPostValidator = require('../middlewares/validators/createPost');
 const updatePostValidator = require('../middlewares/validators/updatePost');
 const handleValidationErrors = require('../middlewares/handleValidationErrors');
-const { Post } = require('../models');
+const { Post, UploadedImage } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 
 
@@ -57,6 +57,19 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', authenticateToken, createPostValidator, handleValidationErrors, async (req, res) => {
     const { title, content, thumbnail} = req.body; 
+
+    if (thumbnail !== null && thumbnail !== undefined && thumbnail !== '') {
+        const uploadedImage = await UploadedImage.findOne({
+            where: {
+            userId: req.user.userId,
+            filename: thumbnail
+            }
+        });
+        if (!uploadedImage) {
+            return res.status(404).json({ error: 'Thumbnail not found' });
+        }
+    }
+
     try {
         const post = await Post.create({
         title,
