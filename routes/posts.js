@@ -5,7 +5,7 @@ const { Op } = require('sequelize');
 const getPostsValidator = require('../middlewares/validators/getPosts');
 const createPostValidator = require('../middlewares/validators/createPost');
 const updatePostValidator = require('../middlewares/validators/updatePost');
-const handleValidationErrors = require('../middlewares/handleValidationErrors');
+const handleValidationErrors = require('../middlewares/handleValidationErrors.js');
 const { Post, UploadedImage } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 

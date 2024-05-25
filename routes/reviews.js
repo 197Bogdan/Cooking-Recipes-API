@@ -4,7 +4,7 @@ const createReviewValidator = require('../middlewares/validators/createReview');
 const updateReviewValidator = require('../middlewares/validators/updateReview');
 const { Review, Post } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
-const handleValidationErrors = require('../middlewares/handleValidationErrors');
+const handleValidationErrors = require('../middlewares/handleValidationErrors.js');
 
 router.get('/', async (req, res) => {
     try {

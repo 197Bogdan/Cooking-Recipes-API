@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const createAccountValidator = require('../middlewares/validators/createAccount');
 const updateAccountValidator = require('../middlewares/validators/updateAccount');
 const loginAccountValidator = require('../middlewares/validators/loginAccount');
-const handleValidationErrors = require('../middlewares/handleValidationErrors');
+const handleValidationErrors = require('../middlewares/handleValidationErrors.js');
 const { User, Post, Review } = require('../models');
 const { authenticateToken, secretKey } = require('../middlewares/authenticateToken');
 
