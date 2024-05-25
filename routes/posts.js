@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-// const { validateUser, validateUserId } = require('../middlewares/validators');
-// const { handleValidationErrors } = require('../middlewares/handleValidationErrors');
+const createPostValidator = require('../middlewares/validators/createPost');
+const updatePostValidator = require('../middlewares/validators/updatePost');
+const handleValidationErrors = require('../middlewares/handleValidationErrors');
 const { Post } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 
@@ -31,7 +32,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, createPostValidator, handleValidationErrors, async (req, res) => {
     const { title, content, thumbnail} = req.body; 
     try {
         const post = await Post.create({
@@ -47,7 +48,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 });
 
-router.put('/:postId', authenticateToken, async (req, res) => {
+router.put('/:postId', authenticateToken, updatePostValidator, handleValidationErrors, async (req, res) => {
     const { title, content, thumbnail } = req.body;
     const { postId } = req.params;
     console.log(req.user);

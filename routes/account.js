@@ -2,14 +2,16 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-// const { validateUser, validateUserId } = require('../middlewares/validators');
-// const { handleValidationErrors } = require('../middlewares/handleValidationErrors');
+const createAccountValidator = require('../middlewares/validators/createAccount');
+const updateAccountValidator = require('../middlewares/validators/updateAccount');
+const loginAccountValidator = require('../middlewares/validators/loginAccount');
+const handleValidationErrors = require('../middlewares/handleValidationErrors');
 const { User, Post, Review } = require('../models');
 const { authenticateToken, secretKey } = require('../middlewares/authenticateToken');
 
 
 
-router.post('/register', async (req, res) => {
+router.post('/register', createAccountValidator, handleValidationErrors, async (req, res) => {
     const { username, password, realName, description } = req.body;
     console.log(username, password);
     try {
@@ -27,7 +29,7 @@ router.post('/register', async (req, res) => {
   });
 
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginAccountValidator, handleValidationErrors, async (req, res) => {
     const { username, password } = req.body;
     try {
         const user = await User.findOne({ where: { username } });
@@ -47,8 +49,9 @@ router.post('/login', async (req, res) => {
 });
 
 
-router.put('/update', authenticateToken, async (req, res) => {
+router.put('/update', authenticateToken, updateAccountValidator, handleValidationErrors, async (req, res) => {
     const { password, realName, description } = req.body;
+    console.log(req.body)
     const userId = req.user.userId;
 
     try {
@@ -57,19 +60,7 @@ router.put('/update', authenticateToken, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        let newUser;
-        if (password) {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            newUser = { password: hashedPassword };
-        }
-        if (realName) {
-            newUser = { ...newUser, realName };
-        }
-        if (description) {
-            newUser = { ...newUser, description };
-        }
-
-        await user.update(newUser);
+        await user.update({ password, realName, description });
         user = await User.findOne({ where: { id: userId }, attributes: { exclude: ['password'] } });
         res.json(user);
     } catch (error) {

@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
-// const { validateUser, validateUserId } = require('../middlewares/validators');
-// const { handleValidationErrors } = require('../middlewares/handleValidationErrors');
+const createReviewValidator = require('../middlewares/validators/createReview');
+const updateReviewValidator = require('../middlewares/validators/updateReview');
 const { Review } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
+const handleValidationErrors = require('../middlewares/handleValidationErrors');
 
 router.get('/', async (req, res) => {
     try {
@@ -31,7 +32,7 @@ router.get('/:id', async (req, res) => {
 });
 
 
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, createReviewValidator, handleValidationErrors, async (req, res) => {
     const { rating, comment} = req.body; 
     const { postId } = req.params;
     try {
@@ -50,7 +51,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
 
 
-router.put('/:reviewId', authenticateToken, async (req, res) => {
+router.put('/:reviewId', authenticateToken, updateReviewValidator, handleValidationErrors, async (req, res) => {
     const { rating, comment } = req.body;
     const { reviewId } = req.params;
     const userId = req.user.userId;
