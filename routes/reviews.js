@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const createReviewValidator = require('../middlewares/validators/createReview');
 const updateReviewValidator = require('../middlewares/validators/updateReview');
-const { Review, Post } = require('../models');
+const { Review, Post, User } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 const handleValidationErrors = require('../middlewares/handleValidationErrors.js');
 
@@ -35,8 +35,9 @@ const handleValidationErrors = require('../middlewares/handleValidationErrors.js
  *         description: Internal server error
  */
 router.get('/', async (req, res) => {
+    const { postId } = req.params;
     try {
-      const reviews = await Review.findAll();
+      const reviews = await Review.findAll({ where: { PostId: postId }, include: [{ model: User, attributes: ['id'] }] });
       res.json(reviews);
     } catch (error) {
       console.error(error);

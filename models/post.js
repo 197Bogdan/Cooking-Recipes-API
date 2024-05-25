@@ -16,10 +16,6 @@ const Post = sequelize.define('Post', {
     type: DataTypes.TEXT,
     allowNull: false
   },
-  thumbnail: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
   views: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -35,14 +31,6 @@ const Post = sequelize.define('Post', {
     allowNull: false,
     defaultValue: 0
   },
-  // userId: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  //   references: {
-  //     model: User,
-  //     key: 'id'
-  //   }
-  // }
 });
 
 module.exports = Post;

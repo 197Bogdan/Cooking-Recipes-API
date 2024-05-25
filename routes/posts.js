@@ -142,8 +142,8 @@ router.get('/:id', async (req, res) => {
  *                 type: string
  *               content:
  *                 type: string
- *               thumbnail:
- *                 type: string
+ *               imageId:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Created
@@ -151,17 +151,19 @@ router.get('/:id', async (req, res) => {
  *         description: Internal server error
  */
 router.post('/', authenticateToken, createPostValidator, handleValidationErrors, async (req, res) => {
-    const { title, content, thumbnail} = req.body; 
+    const { title, content, imageId } = req.body; 
 
-    if (thumbnail !== null && thumbnail !== undefined && thumbnail !== '') {
+    console.log(imageId)
+    if (imageId !== null && imageId !== undefined) {
         const uploadedImage = await UploadedImage.findOne({
             where: {
             UserId: req.user.userId,
-            filename: thumbnail
+            id: imageId
             }
         });
+        console.log(imageId);
         if (!uploadedImage) {
-            return res.status(404).json({ error: 'Thumbnail not found' });
+            return res.status(404).json({ error: 'imageId not found' });
         }
     }
 
@@ -169,7 +171,7 @@ router.post('/', authenticateToken, createPostValidator, handleValidationErrors,
         const post = await Post.create({
         title,
         content,
-        thumbnail,
+        ImageId: imageId,
         UserId: req.user.userId 
         });
         res.status(201).json(post); 
@@ -206,7 +208,7 @@ router.post('/', authenticateToken, createPostValidator, handleValidationErrors,
  *                 type: string
  *               content:
  *                 type: string
- *               thumbnail:
+ *               imageId:
  *                 type: string
  *     responses:
  *       200:
@@ -217,18 +219,18 @@ router.post('/', authenticateToken, createPostValidator, handleValidationErrors,
  *         description: Internal server error
  */
 router.put('/:postId', authenticateToken, updatePostValidator, handleValidationErrors, async (req, res) => {
-    const { title, content, thumbnail } = req.body;
+    const { title, content, imageId } = req.body;
     const { postId } = req.params;
     console.log(req.user);
     const userId = req.user.userId;
   
     try {
-      const post = await Post.findOne({ where: { id: postId, UserId } });
+      const post = await Post.findOne({ where: { id: postId, UserId: userId } });
       if (!post) {
         return res.status(404).json({ error: 'Post not found or unauthorized' });
       }
   
-      await post.update({ title, content, thumbnail });
+      await post.update({ title, content, imageId });
       res.json(post);
     } catch (error) {
       console.error(error);

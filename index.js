@@ -51,12 +51,10 @@ app.use('/account', accountRoutes);
 app.use('/images', imageRoutes);
 
 
-
-
 sequelize.sync()
   .then(async () => {
     const svg = await sequelizeErd({ source: sequelize }); // sequelizeErd() returns a Promise
-    writeFileSync('./erd.svg', svg);
+    writeFileSync('./documentation/database.svg', svg);
 
     console.log('Sequelize models synchronized with the database.');
     app.listen(process.env.PORT, () => {

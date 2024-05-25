@@ -1,8 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
-const User = require('./user'); 
 
-const UploadedImage = sequelize.define('UploadedImages', {
+const Image = sequelize.define('Image', {
   id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,14 +11,6 @@ const UploadedImage = sequelize.define('UploadedImages', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  // userId: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  //   references: {
-  //       model: User,
-  //       key: 'id'
-  //     }
-  // } 
 });
 
-module.exports = UploadedImage;
+module.exports = Image;
