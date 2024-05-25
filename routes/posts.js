@@ -11,7 +11,10 @@ const { authenticateToken } = require('../middlewares/authenticateToken');
 
 
 router.get('/', getPostsValidator, handleValidationErrors, async (req, res) => {
-    const { minViews, minRating, sort } = req.query;
+    const { minViews, minRating, sort, page = 1, postsPerPage = 5 } = req.query;
+
+    const startingPoint = (page - 1) * postsPerPage;
+    const pageCount = postsPerPage;
 
     const queryOptions = {};
     if (minViews) {
@@ -28,7 +31,7 @@ router.get('/', getPostsValidator, handleValidationErrors, async (req, res) => {
     }
 
     try {
-        const posts = await Post.findAll({where: queryOptions, order: sortOption});
+        const posts = await Post.findAll({where: queryOptions, order: sortOption, offset: startingPoint, limit: pageCount});
         res.json(posts);
     } catch (error) {
         console.error(error);
