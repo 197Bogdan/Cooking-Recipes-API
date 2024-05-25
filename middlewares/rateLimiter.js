@@ -4,10 +4,7 @@ const maxRequestsPerMinute = 20;
 
 function rateLimiter(req, res, next) {
   const ip = req.ip; 
-
-
   const currentTime = Math.floor(Date.now() / 1000);
-
 
   if (!requestCounts.has(ip)) {
     requestCounts.set(ip, []);

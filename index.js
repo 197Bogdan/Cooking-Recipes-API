@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const rateLimiter = require('./middlewares/rateLimiter');
+const logger = require('./middlewares/logger');
 
 const sequelize = require('./database'); 
 const userRoutes = require('./routes/users');
@@ -15,7 +16,9 @@ const app = express();
 
 
 app.use(express.json());
+app.use(logger);
 app.use(rateLimiter);
+
 
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
