@@ -156,7 +156,7 @@ router.post('/', authenticateToken, createPostValidator, handleValidationErrors,
     if (thumbnail !== null && thumbnail !== undefined && thumbnail !== '') {
         const uploadedImage = await UploadedImage.findOne({
             where: {
-            userId: req.user.userId,
+            UserId: req.user.userId,
             filename: thumbnail
             }
         });
@@ -170,7 +170,7 @@ router.post('/', authenticateToken, createPostValidator, handleValidationErrors,
         title,
         content,
         thumbnail,
-        userId: req.user.userId 
+        UserId: req.user.userId 
         });
         res.status(201).json(post); 
     } catch (error) {
@@ -223,7 +223,7 @@ router.put('/:postId', authenticateToken, updatePostValidator, handleValidationE
     const userId = req.user.userId;
   
     try {
-      const post = await Post.findOne({ where: { id: postId, userId } });
+      const post = await Post.findOne({ where: { id: postId, UserId } });
       if (!post) {
         return res.status(404).json({ error: 'Post not found or unauthorized' });
       }
@@ -265,7 +265,7 @@ router.delete('/:postId', authenticateToken, async (req, res) => {
     const userId = req.user.userId;
 
     try {
-        const post = await Post.findOne({ where: { id: postId, userId } });
+        const post = await Post.findOne({ where: { id: postId, UserId } });
         if (!post) {
         return res.status(404).json({ error: 'Post not found or unauthorized' });
         }

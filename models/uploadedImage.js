@@ -12,14 +12,14 @@ const UploadedImage = sequelize.define('UploadedImages', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-        model: User,
-        key: 'id'
-      }
-  } 
+  // userId: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //       model: User,
+  //       key: 'id'
+  //     }
+  // } 
 });
 
 module.exports = UploadedImage;

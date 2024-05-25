@@ -35,14 +35,14 @@ const Post = sequelize.define('Post', {
     allowNull: false,
     defaultValue: 0
   },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: 'id'
-    }
-  }
+  // userId: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //     model: User,
+  //     key: 'id'
+  //   }
+  // }
 });
 
 module.exports = Post;

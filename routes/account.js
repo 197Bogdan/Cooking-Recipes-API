@@ -176,8 +176,8 @@ router.delete('/delete', authenticateToken, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        await Review.destroy({ where: { userId } });
-        await Post.destroy({ where: { userId } });
+        await Review.destroy({ where: { UserId: userId } });
+        await Post.destroy({ where: { UserId: userId } });
         await user.destroy();
 
 

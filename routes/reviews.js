@@ -115,8 +115,8 @@ router.post('/', authenticateToken, createReviewValidator, handleValidationError
         const review = await Review.create({
         rating,
         comment,
-        userId: req.user.userId, 
-        postId 
+        UserId: req.user.userId, 
+        PostId: postId 
         });
 
         let post = await Post.findByPk(postId);
@@ -174,7 +174,7 @@ router.put('/:reviewId', authenticateToken, updateReviewValidator, handleValidat
     const userId = req.user.userId;
 
     try {
-        const review = await Review.findOne({ where: { id: reviewId, userId } });
+        const review = await Review.findOne({ where: { id: reviewId, UserId: userId } });
         if (!review) {
         return res.status(404).json({ error: 'Review not found or unauthorized' });
         }
@@ -217,7 +217,7 @@ router.delete('/:reviewId', authenticateToken, async (req, res) => {
     const userId = req.user.userId; 
 
     try {
-        const review = await Review.findOne({ where: { id: reviewId, userId } });
+        const review = await Review.findOne({ where: { id: reviewId, UserId: userId } });
         if (!review) {
         return res.status(404).json({ error: 'Review not found or unauthorized' });
         }

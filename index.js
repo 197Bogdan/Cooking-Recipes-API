@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const path = require('path');
 
+const {writeFileSync} = require('fs');
+const sequelizeErd = require('sequelize-erd');
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
@@ -51,7 +54,10 @@ app.use('/images', imageRoutes);
 
 
 sequelize.sync()
-  .then(() => {
+  .then(async () => {
+    const svg = await sequelizeErd({ source: sequelize }); // sequelizeErd() returns a Promise
+    writeFileSync('./erd.svg', svg);
+
     console.log('Sequelize models synchronized with the database.');
     app.listen(process.env.PORT, () => {
       console.log('Server is running on port 3000.');

@@ -36,7 +36,7 @@ const upload = multer({ storage: storage });
     *         description: Internal server error
     */
 router.get('/', authenticateToken, async (req, res) => {
-  const images = await UploadedImage.findAll({ where: { userId: req.user.userId } });
+  const images = await UploadedImage.findAll({ where: { UserId: req.user.userId } });
   res.json(images);
 });
 
@@ -66,7 +66,7 @@ router.get('/', authenticateToken, async (req, res) => {
 router.post('/upload', authenticateToken, upload.single('image'), async (req, res) => {
   console.log(req.file);
   const filename = req.file.filename; 
-  await UploadedImage.create({ filename, userId: req.user.userId });
+  await UploadedImage.create({ filename, UserId: req.user.userId });
   res.json({ success: true, message: 'Image uploaded successfully', filename: filename });
 });
 
