@@ -1,6 +1,5 @@
 
 const requestCounts = new Map();
-const maxRequestsPerMinute = 20; 
 
 function rateLimiter(req, res, next) {
   const ip = req.ip; 
@@ -13,7 +12,7 @@ function rateLimiter(req, res, next) {
   const requests = requestCounts.get(ip).filter((timestamp) => currentTime - timestamp < 60);
   requestCounts.set(ip, requests);
 
-  if (requests.length >= maxRequestsPerMinute) {
+  if (requests.length >= process.env.REQUESTS_PER_MIN) {
     return res.status(429).send('Too many requests from this IP, please try again later.');
   }
   requestCounts.get(ip).push(currentTime);

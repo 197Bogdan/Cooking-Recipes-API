@@ -1,21 +1,19 @@
 const fs = require('fs');
 
-const logFilePath = "logs.txt";
-const maxBufferSize = 512; 
 let logBuffer = ''; 
 
 function logger(req, res, next) {
   const logMessage = `[${new Date().toISOString()}] ${req.ip} ${req.method} ${req.url}\n`;
   logBuffer += logMessage;
 
-  if (logBuffer.length >= maxBufferSize) {
+  if (logBuffer.length >= process.env.MAX_BUFFER_SIZE) {
     flushLogsToFile();
   }
   next();
 }
 
 function flushLogsToFile() {
-  fs.appendFile(logFilePath, logBuffer, (err) => {
+  fs.appendFile(process.env.LOG_FILE_PATH, logBuffer, (err) => {
     if (err) {
       console.error('Error writing logs to file:', err);
     } else {

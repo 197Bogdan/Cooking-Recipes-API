@@ -12,8 +12,8 @@ Review.belongsTo(User);
 Post.hasMany(Review);
 Review.belongsTo(Post);
 
-// User.hasMany(UploadedImage);
-// UploadedImage.belongsTo(User);
+User.hasMany(UploadedImage);
+UploadedImage.belongsTo(User);
 
 
 module.exports = { User, Post, Review, UploadedImage };
