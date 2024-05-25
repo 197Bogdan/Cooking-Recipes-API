@@ -20,6 +20,21 @@ const Post = sequelize.define('Post', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  views: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  averageRating: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0
+  },
+  reviewCount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,

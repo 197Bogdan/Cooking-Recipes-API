@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const createReviewValidator = require('../middlewares/validators/createReview');
 const updateReviewValidator = require('../middlewares/validators/updateReview');
-const { Review } = require('../models');
+const { Review, Post } = require('../models');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 const handleValidationErrors = require('../middlewares/handleValidationErrors');
 
@@ -42,6 +42,13 @@ router.post('/', authenticateToken, createReviewValidator, handleValidationError
         userId: req.user.userId, 
         postId 
         });
+
+        let post = await Post.findByPk(postId);
+        let averageRating = post.averageRating;
+        let reviewCount = post.reviewCount;
+        let newAverageRating = (averageRating * reviewCount + rating) / (reviewCount + 1);
+        await post.update({ averageRating: newAverageRating, reviewCount: reviewCount + 1 });
+
         res.status(201).json(review);
     } catch (error) {
         console.error(error);
